@@ -45,7 +45,7 @@ passport.deserializeUser((id, done)=>{
   {_id: new ObjectID(id)},
   (err, doc)=> {
     done(null, doc);
-  })
+  });
   
 });
 
