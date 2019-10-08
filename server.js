@@ -47,7 +47,13 @@ function(username, password, done){
     return done(null, user);
   });
 }));
-      
+
+var ensureAuthenticated = function(req, res, next) {
+  if (req.isAuthenticated()) {
+      return next();
+  }
+  res.redirect('/');
+};      
       
 passport.serializeUser((user, done)=>{
   done(null, user._id);
@@ -64,9 +70,9 @@ passport.deserializeUser((id, done)=>{
 app.post('/login', passport.authenticate('local', {failureRedirect: '/'}), function(req, res){
   res.redirect('/profile');
 });
- app.get('/profile', function(req, res){
+app.get('/profile', ensureAuthenticated, function(req, res){
    res.render(process.cwd() + '/views/pug/profile');
- })
+ });
 
 app.listen(process.env.PORT || 3000, () => {
   console.log("Listening on port " + process.env.PORT);
