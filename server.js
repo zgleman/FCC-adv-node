@@ -70,21 +70,14 @@ passport.deserializeUser((id, done)=>{
 app.post('/login', passport.authenticate('local', {failureRedirect: '/'}), function(req, res){
   res.redirect('/profile');
 });
-app.get('/profile', ensureAuthenticated, function(req, res){
-   res.render(process.cwd() + '/views/pug/profile', {username: req.user.username});
- });
-app.get('/logout', function(req, res){
-  req.logout();
-  res.redirect('/');
-});
-app.post('/register', function(req, res, next){
-  db.collection('users').findOne({username: req.body.username}), function (err, user){
+app.route('/register')
+   .post(function(req, res, next){
+  db.collection('users').findOne({username: req.body.username}, function (err, user){
     if (err) {
       next(err);
     } else if (user) {
       res.redirect('/');
-    }
-    else {
+    }  else {
       db.collection('users').insertOne({
         username: req.body.username,
         password: req.body.password},
@@ -96,8 +89,19 @@ app.post('/register', function(req, res, next){
         }
       });
       }
-    }  
-}, passport.authenticate('local', {failureRedirect: '/'}, function(req,)));
+    })}, 
+  passport.authenticate('local', {failureRedirect: '/'}, function(req, res, next){
+  res.redirect('/profile');
+})
+        );      
+app.get('/profile', ensureAuthenticated, function(req, res){
+   res.render(process.cwd() + '/views/pug/profile', {username: req.user.username});
+ });
+app.get('/logout', function(req, res){
+  req.logout();
+  res.redirect('/');
+});
+
 app.use((req,res, next)=>{
   res.status(404)
   .type('text')
