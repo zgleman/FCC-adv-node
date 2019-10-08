@@ -11,7 +11,7 @@ const ObjectID = require('mongodb').ObjectId;
 const LocalStrategy = require('passport-local');
 
 process.env.SESSION_SECRET = 23.4;
-process.env.DATABASE = 'mongodb+srv://zgleman:grey1127@cluster0-2my3z.mongodb.net/test?retryWrites=true&w=majority';
+process.env.DATABASE = 'mongodb://zgleman:grey1127@cluster0-shard-00-00-2my3z.mongodb.net:27017,cluster0-shard-00-01-2my3z.mongodb.net:27017,cluster0-shard-00-02-2my3z.mongodb.net:27017/admin?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin&retryWrites=true&w=majority';
 
 app.use(session({
   secret: process.env.SESSION_SECRET,
@@ -37,25 +37,8 @@ mongo.connect(process.env.DATABASE, (err, db) => {
         console.log('Database error: ' + err);
     } else {
         console.log('Successful database connection');
-passport.use(new LocalStrategy(
-function(username, password, done){
-  db.collection('users').findOne({username: username }, function (err, user) {
-    console.log('User '+ username + ' attempted to log in.');
-    if (err) { return done(err);}
-    if (!user) {return done(null, false);}
-    if (password !== user.password) {return done(null, false);}
-    return done(null, user);
-  });
-}));
-
-var ensureAuthenticated = function(req, res, next) {
-  if (req.isAuthenticated()) {
-      return next();
-  }
-  res.redirect('/');
-};      
-      
-passport.serializeUser((user, done)=>{
+        
+      passport.serializeUser((user, done)=>{
   done(null, user._id);
 });
 passport.deserializeUser((id, done)=>{
@@ -66,6 +49,25 @@ passport.deserializeUser((id, done)=>{
   });
   
 });
+      passport.use(new LocalStrategy(
+        function(username, password, done){
+        db.collection('users').findOne({username: username }, function (err, user) {
+        console.log('User '+ username + ' attempted to log in.');
+    if (err) { return done(err);}
+    if (!user) {return done(null, false);}
+    if (password !== user.password) {return done(null, false);}
+    return done(null, user);
+  });
+}));
+
+function ensureAuthenticated(req, res, next) {
+  if (req.isAuthenticated()) {
+      return next();
+  }
+  res.redirect('/');
+};      
+      
+
 
 app.post('/login', passport.authenticate('local', {failureRedirect: '/'}), function(req, res){
   res.redirect('/profile');
