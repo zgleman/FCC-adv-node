@@ -29,7 +29,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.set('view engine', 'pug');
 app.route('/')
   .get((req, res) => {
-    res.render(process.cwd() + '/views/pug/index.pug', {title: 'Hello', message: 'Please login'});
+    res.render(process.cwd() + '/views/pug/index.pug', {title: 'Hello', message: 'Please login', showLogin: true});
   });
 
 mongo.connect(process.env.DATABASE, (err, db) => {
@@ -61,7 +61,12 @@ passport.deserializeUser((id, done)=>{
   
 });
 
-
+app.post('/login', passport.authenticate('local', {failureRedirect: '/'}), function(req, res){
+  res.redirect('/profile');
+});
+ app.get('/profile', function(req, res){
+   res.render(process.cwd() + '/views/pug/profile');
+ })
 
 app.listen(process.env.PORT || 3000, () => {
   console.log("Listening on port " + process.env.PORT);
