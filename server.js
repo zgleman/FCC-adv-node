@@ -29,7 +29,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.set('view engine', 'pug');
 app.route('/')
   .get((req, res) => {
-    res.render(process.cwd() + '/views/pug/index.pug', {title: 'Home Page', message: 'Please login', showLogin: true});
+    res.render(process.cwd() + '/views/pug/index.pug', {title: 'Home Page', message: 'Please login', showLogin: true, showRegistration: true});
   });
 
 mongo.connect(process.env.DATABASE, (err, db) => {
@@ -77,6 +77,9 @@ app.get('/logout', function(req, res){
   req.logout();
   res.redirect('/');
 });
+app.post('/register', function(req, res){
+  
+})
 app.use((req,res, next)=>{
   res.status(404)
   .type('text')
