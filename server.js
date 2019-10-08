@@ -8,6 +8,7 @@ const passport = require('passport');
 const app = express();
 const mongo = require('mongodb').MongoClient;
 const ObjectID = require('mongodb').ObjectId;
+const LocalStrategy = require('passport-local');
 
 process.env.SESSION_SECRET = 23.4;
 process.env.DATABASE = 'mongodb+srv://zgleman:grey1127@cluster0-2my3z.mongodb.net/test?retryWrites=true&w=majority';
@@ -36,6 +37,17 @@ mongo.connect(process.env.DATABASE, (err, db) => {
         console.log('Database error: ' + err);
     } else {
         console.log('Successful database connection');
+passport.use(new LocalStrategy(
+function(username, password, done){
+  db.collection('users').findOne({username: username }, function (err, user) {
+    console.log('User '+ username + ' attempted to log in.');
+    if (err) { return done(err);}
+    if (!user) {return done(null, false);}
+    if (password !== user.password) {return done(null, false);}
+    return done(null, user);
+  });
+}));
+      
       
 passport.serializeUser((user, done)=>{
   done(null, user._id);
