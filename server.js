@@ -9,7 +9,8 @@ const app = express();
 const mongo = require("mongodb").MongoClient;
 const ObjectID = require("mongodb").ObjectId;
 const LocalStrategy = require("passport-local");
-
+const bcrypt = require("bcrypt");
+const routes = require('./routes.js')
 process.env.SESSION_SECRET = 23.4;
 process.env.DATABASE =
   "mongodb://zgleman:grey1127@cluster0-shard-00-00-2my3z.mongodb.net:27017,cluster0-shard-00-01-2my3z.mongodb.net:27017,cluster0-shard-00-02-2my3z.mongodb.net:27017/test?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin&retryWrites=true&w=majority";
@@ -52,7 +53,7 @@ mongo.connect(process.env.DATABASE, (err, db) => {
           console.log("User " + username + " attempted to log in.");
           if (err) { return done(err); }
           if (!user) { return done(null, false); }
-          if (password !== user.password) { return done(null, false); }
+          if (!bcrypt.compareSync(password, user.password)) { return done(null, false); }
           return done(null, user);
         });
       })
@@ -94,10 +95,11 @@ mongo.connect(process.env.DATABASE, (err, db) => {
             } else if (user) {
               res.redirect("/");
             } else {
+              var hash = bcrypt.hashSync(req.body.password, 12);
               db.collection("users").insertOne(
                 {
                   username: req.body.username,
-                  password: req.body.password
+                  password: hash
                 },
                 (err, doc) => {
                   if (err) {
