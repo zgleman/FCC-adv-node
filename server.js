@@ -41,10 +41,13 @@ mongo.connect(process.env.DATABASE, (err, db) => {
     app.listen(process.env.PORT || 3000, () => {
       console.log("Listening on port " + process.env.PORT);
     });
-    
+    var currentUsers = 0;
     io.on('connection', socket => {
   console.log('A user has connected');
+    ++currentUsers;
+      io.emit('user count', currentUsers);
 });
+    
 
 
   }

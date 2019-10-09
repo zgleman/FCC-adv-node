@@ -29,7 +29,7 @@ html
         div
           input(type='submit', value='Log In')
           
-    if showRegistration
+    
       hr
       p Registration Form
       form(action='/register', method='post')
@@ -41,7 +41,10 @@ html
           input(type='password', name='password')
         div
           input(type='submit', value='Register')
-      
+h2.center Socket.IO Chat Rooom
+     .login.center
+      a(href='/auth/github') Login with Github!
+    
         
-    script(src='https://code.jquery.com/jquery-2.2.1.min.js', integrity='sha256-gvQgAFzTH6trSrAWoH1iPo9Xc96QxSZ3feW6kem+O00=', crossorigin='anonymous')
-    script(src='/public/client.js')
+script(src='https://code.jquery.com/jquery-2.2.1.min.js', integrity='sha256-gvQgAFzTH6trSrAWoH1iPo9Xc96QxSZ3feW6kem+O00=', crossorigin='anonymous')
+script(src='/public/client.js')
