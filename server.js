@@ -111,10 +111,9 @@ mongo.connect(process.env.DATABASE, (err, db) => {
           }
         );
       },
-      passport.authenticate("local", { failureRedirect: "/" }, function(req, res, next) {
+      passport.authenticate("local", { failureRedirect: "/" }), function(req, res, next) {
         res.redirect("/profile");
-      })
-    );
+      });
 
     app.get("/logout", function(req, res) {
       req.logout();
