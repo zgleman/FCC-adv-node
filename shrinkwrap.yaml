@@ -5,7 +5,7 @@ dependencies:
   express-session: 1.16.2
   helmet: 3.21.1
   mongodb: 2.2.36
-  passport: 0.3.2
+  passport: 0.4.0
   passport-local: 1.0.0
   pug: 0.1.0
 packages:
@@ -726,7 +726,7 @@ packages:
       node: '>= 0.4.0'
     resolution:
       integrity: sha1-tVOaqPwiWj0a0XlHbd8ja0QPUuQ=
-  /passport/0.3.2:
+  /passport/0.4.0:
     dependencies:
       passport-strategy: 1.0.0
       pause: 0.0.1
@@ -734,7 +734,7 @@ packages:
     engines:
       node: '>= 0.4.0'
     resolution:
-      integrity: sha1-ndAJ+RXo/glbASSgG4+C2gdRAQI=
+      integrity: sha1-xQlWkTR71a07XhgCOMORTRbwWBE=
   /path-parse/1.0.6:
     dev: false
     resolution:
@@ -1140,6 +1140,6 @@ specifiers:
   express-session: ^1.15.0
   helmet: ^3.4.0
   mongodb: ^2.2.22
-  passport: ^0.3.2
+  passport: ^0.4.0
   passport-local: ^1.0.0
   pug: ^0.1.0
