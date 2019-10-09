@@ -7,7 +7,7 @@ const session = require("express-session");
 const passport = require("passport");
 const app = express();
 const mongo = require("mongodb").MongoClient;
-const GithubStrategy = require('passport-github').Strategy;
+const GitHubStrategy = require('passport-github').Strategy;
 
 const routes = require('./Routes.js');
 const auth = require('./Auth.js');
@@ -36,6 +36,15 @@ mongo.connect(process.env.DATABASE, (err, db) => {
   } else {
     console.log("Successful database connection");
     auth(app, db);
+    passport.use(new GitHubStrategy({
+      clientID: process.env.GITHUB_CLIENT_ID,
+      clientSecret: process.env.GITHUB_CLIENT_SECRET,
+      callbackURL: 'https://zgleman-advnode.glitch.me/auth/github/callback'
+    }, function(accessToken, refreshToken, profile, cb){
+      console.log(profile);
+      db.collection(;)
+    }));
+    
     routes(app, db);
     app.route("/auth/github")
         .get(passport.authenticate('github'));
