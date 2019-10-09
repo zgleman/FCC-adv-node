@@ -89,7 +89,7 @@ app.route('/register')
         } else {
           next(null, user);
         }
-      });
+      })
       }
     })}, 
   passport.authenticate('local', {failureRedirect: '/'}, function(req, res, next){
