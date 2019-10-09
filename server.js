@@ -7,7 +7,7 @@ const session = require("express-session");
 const passport = require("passport");
 const app = express();
 const mongo = require("mongodb").MongoClient;
-
+const GithubStrategy = require('passport-github').Strategy;
 
 const routes = require('./Routes.js');
 const auth = require('./Auth.js');
@@ -37,7 +37,13 @@ mongo.connect(process.env.DATABASE, (err, db) => {
     console.log("Successful database connection");
     auth(app, db);
     routes(app, db);
+    app.route("/auth/github")
+        .get(passport.authenticate('github'));
     
+    app.route("/auth/github/callback")
+        .get(passport.authenticate('github', {failureRedirect: '/'}), function(req, res){
+      res.redirect('/profile');
+    });
     
     
 

@@ -8,7 +8,8 @@ module.exports = function (app, db) {
       }
       res.redirect("/");
     };
-
+    
+  
     app.route("/").get((req, res) => {
       res.render(process.cwd() + "/views/pug/index.pug", {
         title: "Home Page",
@@ -60,13 +61,7 @@ module.exports = function (app, db) {
         res.redirect("/profile");
       });
   
-    app.route("/auth/github")
-        .get(passport.authenticate('github'));
     
-    app.route("/auth/github/callback")
-        .get(passport.authenticate('github', {failureRedirect: '/'}), function(req, res){
-      res.redirect('/profile');
-    })
 
     app.get("/logout", function(req, res) {
       req.logout();
