@@ -11,7 +11,7 @@ const ObjectID = require('mongodb').ObjectId;
 const LocalStrategy = require('passport-local');
 
 process.env.SESSION_SECRET = 23.4;
-process.env.DATABASE = "mongodb+srv://zgleman:grey1127@cluster0-2my3z.mongodb.net/test?retryWrites=true&w=majority";
+process.env.DATABASE = "mongodb://zgleman:grey1127@cluster0-shard-00-00-2my3z.mongodb.net:27017,cluster0-shard-00-01-2my3z.mongodb.net:27017,cluster0-shard-00-02-2my3z.mongodb.net:27017/test?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin&retryWrites=true&w=majority";
 
 app.use(session({
   secret: process.env.SESSION_SECRET,
@@ -67,6 +67,11 @@ function ensureAuthenticated(req, res, next) {
   res.redirect('/');
 };      
       
+
+
+app.post('/login', passport.authenticate('local', {failureRedirect: '/'}), function(req, res){
+  res.redirect('/profile');
+});
 app.route('/register')
    .post(function(req, res, next){
   db.collection('users').findOne({username: req.body.username}, function (err, user){
@@ -90,12 +95,7 @@ app.route('/register')
   passport.authenticate('local', {failureRedirect: '/'}, function(req, res, next){
   res.redirect('/profile');
 })
-        );
-
-app.post('/login', passport.authenticate('local', {failureRedirect: '/'}), function(req, res){
-  res.redirect('/profile');
-});
-      
+        );      
 app.get('/profile', ensureAuthenticated, function(req, res){
    res.render(process.cwd() + '/views/pug/profile', {username: req.user.username});
  });
