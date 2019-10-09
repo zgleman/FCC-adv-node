@@ -12,9 +12,7 @@ const mongo = require("mongodb").MongoClient;
 const routes = require('./Routes.js');
 const auth = require('./Auth.js');
 
-process.env.SESSION_SECRET = 23.4;
-process.env.DATABASE =
-  "mongodb://zgleman:grey1127@cluster0-shard-00-00-2my3z.mongodb.net:27017,cluster0-shard-00-01-2my3z.mongodb.net:27017,cluster0-shard-00-02-2my3z.mongodb.net:27017/test?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin&retryWrites=true&w=majority";
+
 
 app.use(
   session({
