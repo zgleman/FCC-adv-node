@@ -8,7 +8,13 @@ module.exports = function (app, db) {
       }
       res.redirect("/");
     };
+    app.route("/auth/github")
+        .get(passport.authenticate('github'));
     
+    app.route("/auth/github/callback")
+        .get(passport.authenticate('github', {failureRedirect: '/'}), function(req, res){
+      res.redirect('/profile');
+    });
   
     app.route("/").get((req, res) => {
       res.render(process.cwd() + "/views/pug/index.pug", {
@@ -74,8 +80,6 @@ module.exports = function (app, db) {
         .type("text")
         .send("Not Found");
     });
-    app.listen(process.env.PORT || 3000, () => {
-      console.log("Listening on port " + process.env.PORT);
-    });
+   
 
 }
