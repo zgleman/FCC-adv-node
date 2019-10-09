@@ -8,7 +8,7 @@ const passport = require("passport");
 const app = express();
 const mongo = require("mongodb").MongoClient;
 const GitHubStrategy = require('passport-github').Strategy;
-
+const io = require('socket.io');
 const routes = require('./Routes.js');
 const auth = require('./Auth.js');
 
@@ -42,7 +42,22 @@ mongo.connect(process.env.DATABASE, (err, db) => {
       callbackURL: 'https://zgleman-advnode.glitch.me/auth/github/callback'
     }, function(accessToken, refreshToken, profile, cb){
       console.log(profile);
-      db.collection(;)
+      db.collection('socialusers').findAndModify(
+      {id: profile.id},
+      {},
+      {$setOnInsert: {
+        id: profile.id,
+        name: profile.displayName,
+        photo: profile.photos[0].value,
+        email: profile.emails[0].value,
+        created_on: new Date(),
+        provider: profile.provider
+      }, $set:{
+        last_login: new Date()
+      }, $inc:{
+        login_count: 1
+      }}, {upsert: true, new: true}, (err, doc)=>{return cb(null, doc.value);
+                                                 });
     }));
     
     routes(app, db);
