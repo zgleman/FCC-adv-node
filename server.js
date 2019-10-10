@@ -7,8 +7,10 @@ const session = require("express-session");
 const passport = require("passport");
 const app = express();
 const mongo = require("mongodb").MongoClient;
-
-
+const http        = require('http').Server(app);
+const sessionStore= new session.MemoryStore();
+const io = require('socket.io')(http);
+const cookieParser= require('cookie-parser')
 const routes = require('./Routes.js');
 const auth = require('./Auth.js');
 
@@ -38,11 +40,18 @@ mongo.connect(process.env.DATABASE, (err, db) => {
     auth(app, db);
     routes(app, db);
     
+    
+    
     app.listen(process.env.PORT || 3000, () => {
       console.log("Listening on port " + process.env.PORT);
     });
+  var currentUsers = 0;  
+io.on('connection', socket => {
+  ++currentUsers;
+  io.emit('user count', currentUsers);
+  console.log('A user has connected');
+});
+
     
-
-
   }
 });
