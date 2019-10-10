@@ -10,9 +10,11 @@ const mongo = require("mongodb").MongoClient;
 const http        = require('http').Server(app);
 const sessionStore= new session.MemoryStore();
 const io = require('socket.io')(http);
-const cookieParser= require('cookie-parser')
+const passportSocketIo = require('passport.socketio');
+const cookieParser= require('cookie-parser');
 const routes = require('./Routes.js');
 const auth = require('./Auth.js');
+
 
 
 
@@ -45,11 +47,24 @@ mongo.connect(process.env.DATABASE, (err, db) => {
     app.listen(process.env.PORT || 3000, () => {
       console.log("Listening on port " + process.env.PORT);
     });
+    
+    io.use(passportSocketIo.authorize({
+  cookieParser: cookieParser,
+  key:          'express.sid',
+  secret:       process.env.SESSION_SECRET,
+  store:        sessionStore
+}));
+    
   var currentUsers = 0;  
 io.on('connection', socket => {
   ++currentUsers;
-  io.emit('user count', currentUsers);
-  console.log('A user has connected');
+  io.emit('user', {name: socket.request.user.name, currentUsers, connected: true});
+  console.log('user ' + socket.request.user.name + ' connected');
+   socket.on('disconnect', () => { 
+     console.log('A user has disconnected');
+     --currentUsers;
+     io.emit('user', {name: socket.request.user.name, currentUsers, connected: false});;
+                                 });
 });
 
     
