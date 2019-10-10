@@ -41,7 +41,7 @@ passport.serializeUser((user, done) => {
         id: profile.id,
         name: profile.displayName || 'No Name',
         photo: profile.photos[0].value || '',
-        //email: profile.email[0].value || 'No Public Email',
+        //email: profile.emails[0].value || 'No Public Email',
         created_on: new Date(),
         provider: profile.provider || ''
       }, $set:{
