@@ -39,11 +39,11 @@ passport.serializeUser((user, done) => {
       {},
       {$setOnInsert: {
         id: profile.id,
-        name: profile.displayName,
-        photo: profile.photos[0].value,
-        email: profile.emails[0].value,
+        name: profile.displayName || 'No Name',
+        photo: profile.photos[0].value || '',
+        //email: profile.email[0].value || 'No Public Email',
         created_on: new Date(),
-        provider: profile.provider
+        provider: profile.provider || ''
       }, $set:{
         last_login: new Date()
       }, $inc:{
